@@ -1,6 +1,3 @@
-// Cloudflare Pages Function for /api/medications
-// Handles: GET (by caregiver, resident, status, search), POST (add), PUT (update), DELETE (delete)
-
 export async function onRequest(context) {
   const url = new URL(context.request.url);
   const method = context.request.method;
@@ -87,6 +84,12 @@ export async function onRequest(context) {
 
   // ---- POST /api/medications ----
   if (method === "POST" && isRoot) {
+    let data;
+    try {
+      data = await context.request.json();
+    } catch {
+      return json({ message: "Invalid JSON." }, 400);
+    }
     const {
       ResidentID,
       StaffNumber,
@@ -96,7 +99,7 @@ export async function onRequest(context) {
       Frequency,
       Priority,
       LastAdministered
-    } = await context.request.json();
+    } = data || {};
 
     // Minimal validation
     if (
@@ -135,6 +138,12 @@ export async function onRequest(context) {
 
   // ---- PUT /api/medications/:id ----
   if (method === "PUT" && isItem) {
+    let data;
+    try {
+      data = await context.request.json();
+    } catch {
+      return json({ message: "Invalid JSON." }, 400);
+    }
     const {
       MedicationName,
       Dosage,
@@ -142,7 +151,7 @@ export async function onRequest(context) {
       Frequency,
       Priority,
       LastAdministered
-    } = await context.request.json();
+    } = data || {};
 
     if (!medicationId) {
       return json({ message: "MedicationID is required." }, 400);

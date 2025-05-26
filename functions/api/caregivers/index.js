@@ -1,7 +1,3 @@
-// Cloudflare Pages Function version of caregivers routes
-// All endpoints: POST / (register), GET / (list caregivers), GET /:StaffNumber, PUT /:StaffNumber, DELETE /:StaffNumber
-// Place this as functions/api/caregivers/index.js
-
 export async function onRequest(context) {
   const url = new URL(context.request.url);
   const method = context.request.method;
@@ -19,6 +15,12 @@ export async function onRequest(context) {
 
   // ---- POST /api/caregivers (Register caregiver) ----
   if (method === "POST" && isRoot) {
+    let body;
+    try {
+      body = await context.request.json();
+    } catch {
+      return json({ message: "Invalid JSON." }, 400);
+    }
     const {
       StaffNumber,
       Password,
@@ -27,7 +29,7 @@ export async function onRequest(context) {
       Email,
       AssignedResident,
       Shift
-    } = await context.request.json();
+    } = body;
 
     // Validation
     const errors = {};
@@ -46,7 +48,6 @@ export async function onRequest(context) {
     }
 
     try {
-      // Try to insert, enforcing uniqueness on StaffNumber
       await context.env.DB.prepare(
         `INSERT INTO Caregivers
           (StaffNumber, Password, Fullname, ContactNo, Email, AssignedResident, Shift)
@@ -63,7 +64,6 @@ export async function onRequest(context) {
 
       return json({ message: 'Caregiver registered successfully.' }, 201);
     } catch (err) {
-      // Constraint violation (uniqueness)
       if (err.message && err.message.includes('UNIQUE')) {
         return json({ message: 'Staff number already exists.' }, 409);
       }
@@ -74,7 +74,6 @@ export async function onRequest(context) {
 
   // ---- POST /api/caregivers/login (Login) ----
   if (method === "POST" && isRoot && url.pathname.endsWith('/login')) {
-    // This route is handled in caregivers/login.js, not here
     return new Response('Not found', { status: 404 });
   }
 
@@ -100,7 +99,6 @@ export async function onRequest(context) {
       if (!results.length) {
         return json({ message: 'Caregiver not found.' }, 404);
       }
-      // Send password as is for admin viewing/editing
       const caregiver = results[0];
       caregiver.Password = caregiver.Password || "";
       return json(caregiver);
@@ -111,6 +109,12 @@ export async function onRequest(context) {
 
   // ---- PUT /api/caregivers/:StaffNumber ----
   if (method === "PUT" && isItem) {
+    let body;
+    try {
+      body = await context.request.json();
+    } catch {
+      return json({ message: "Invalid JSON." }, 400);
+    }
     const {
       Password,
       Fullname,
@@ -118,7 +122,7 @@ export async function onRequest(context) {
       Email,
       AssignedResident,
       Shift
-    } = await context.request.json();
+    } = body;
 
     // Validation
     const errors = {};

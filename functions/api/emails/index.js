@@ -1,6 +1,3 @@
-// Cloudflare Pages Function for /api/emails
-// Handles: POST (save request to Emails table), GET (fetch all emails)
-
 export async function onRequest(context) {
   const method = context.request.method;
 
@@ -13,7 +10,13 @@ export async function onRequest(context) {
 
   // ---- POST /api/emails ----
   if (method === "POST") {
-    const { body } = await context.request.json();
+    let parsed;
+    try {
+      parsed = await context.request.json();
+    } catch {
+      return json({ message: "Invalid JSON." }, 400);
+    }
+    const { body } = parsed || {};
     if (!body || typeof body !== "string" || !body.trim()) {
       return json({ message: "Request body must not be empty." }, 400);
     }

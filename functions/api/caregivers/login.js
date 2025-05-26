@@ -1,7 +1,15 @@
-// Cloudflare Pages Function for POST /api/caregivers/login
-
 export async function onRequestPost(context) {
-  const { StaffNumber, Password } = await context.request.json();
+  let data;
+  try {
+    data = await context.request.json();
+  } catch {
+    return new Response(
+      JSON.stringify({ message: 'Invalid JSON.' }),
+      { status: 400, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+  const { StaffNumber, Password } = data || {};
+
   if (!StaffNumber || !Password) {
     return new Response(
       JSON.stringify({ message: 'StaffNumber and Password are required.' }),
@@ -9,7 +17,7 @@ export async function onRequestPost(context) {
     );
   }
 
-  // Hardcoded admin login
+  // Hardcoded admin login (for development/demo only)
   if (StaffNumber === 'admin' && Password === '1234') {
     return new Response(
       JSON.stringify({ message: 'Admin login successful.' }),
@@ -19,7 +27,7 @@ export async function onRequestPost(context) {
 
   try {
     const { results } = await context.env.DB.prepare(
-      `SELECT * FROM Caregivers WHERE StaffNumber = ? AND Password = ?`
+      `SELECT StaffNumber FROM Caregivers WHERE StaffNumber = ? AND Password = ?`
     ).bind(StaffNumber, Password).all();
 
     if (results.length === 1) {

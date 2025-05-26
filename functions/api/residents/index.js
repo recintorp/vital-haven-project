@@ -1,8 +1,3 @@
-// Cloudflare Pages Function for /api/residents
-// Handles: GET (all/filter), GET by ID, POST (new), PUT (update), DELETE (delete)
-// Note: File upload for MedicalFilePath must use a client-side upload to public storage (Cloudflare R2, S3, etc.)
-// Here, MedicalFilePath is a URL or path string, not a server-uploaded file
-
 export async function onRequest(context) {
   const url = new URL(context.request.url);
   const method = context.request.method;
@@ -57,8 +52,12 @@ export async function onRequest(context) {
 
   // ---- POST /api/residents ----
   if (method === "POST" && isRoot) {
-    // The frontend should upload files to a public storage and send the resulting URL as MedicalFilePath
-    const body = await context.request.json();
+    let body;
+    try {
+      body = await context.request.json();
+    } catch {
+      return json({ message: "Invalid JSON." }, 400);
+    }
     const fullname = body.Fullname || body.fullname;
     const dateOfBirth = body.DateOfBirth || body.dateOfBirth;
     const gender = body.Gender || body.gender;
@@ -100,7 +99,12 @@ export async function onRequest(context) {
 
   // ---- PUT /api/residents/:id ----
   if (method === "PUT" && isItem) {
-    const body = await context.request.json();
+    let body;
+    try {
+      body = await context.request.json();
+    } catch {
+      return json({ message: "Invalid JSON." }, 400);
+    }
     const fullname = body.Fullname || body.fullname;
     const dateOfBirth = body.DateOfBirth || body.dateOfBirth;
     const gender = body.Gender || body.gender;

@@ -1,7 +1,3 @@
-// Cloudflare Pages Function for /api/assessment
-// Handles: GET (recent assessments by caregiver), POST (new assessment)
-// Place this as functions/api/assessment/index.js
-
 export async function onRequest(context) {
   const url = new URL(context.request.url);
   const method = context.request.method;
@@ -32,9 +28,6 @@ export async function onRequest(context) {
         return json([]); // No assigned residents
       }
       const residentIds = residents.map(r => r.ResidentID);
-      if (!residentIds.length) {
-        return json([]);
-      }
 
       // Build the query dynamically for D1 (no named parameters, use ?)
       let query = `
@@ -70,7 +63,13 @@ export async function onRequest(context) {
 
   // ---- POST /api/assessment ----
   if (method === "POST") {
-    const { ResidentID, StaffNumber, Notes } = await context.request.json();
+    let body;
+    try {
+      body = await context.request.json();
+    } catch {
+      return json({ message: "Invalid JSON." }, 400);
+    }
+    const { ResidentID, StaffNumber, Notes } = body || {};
 
     if (
       !ResidentID ||
@@ -78,7 +77,7 @@ export async function onRequest(context) {
       !Notes ||
       !Notes.toString().trim()
     ) {
-      return json({ message: "Resident, StaffNumber, and Notes are required." }, 400);
+      return json({ message: "ResidentID, StaffNumber, and Notes are required." }, 400);
     }
 
     try {
@@ -100,6 +99,6 @@ export async function onRequest(context) {
     }
   }
 
-  // Not found
+  // --- 404 fallback ---
   return new Response('Not found', { status: 404 });
 }
