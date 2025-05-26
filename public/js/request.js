@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
     discardModal.style.display = 'flex';
   });
 
-  // Yes button: redirect to login.html
+  // Yes button: redirect to index.html
   yesBtn.addEventListener('click', () => {
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
   });
 
   // No button: close modal
@@ -23,9 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
     discardModal.style.display = 'none';
   });
 
-  // Return button: redirect to login.html
+  // Return button: redirect to index.html
   returnBtn.addEventListener('click', () => {
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
   });
 
   // Actual POST to backend

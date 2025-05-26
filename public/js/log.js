@@ -28,7 +28,7 @@ if (signOutLink) {
     e.preventDefault();
     document.getElementById('loaderOverlay').classList.add('show');
     setTimeout(() => {
-      window.location.href = 'Login.html';
+      window.location.href = 'index.html';
     }, 800);
   });
 }

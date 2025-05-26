@@ -2,7 +2,7 @@ let selectedRow = null;
 let selectedResidentId = null;
 
 function getLoggedInStaffNumber() {
-  // Use localStorage (set in login.html)
+  // Use localStorage (set in index.html)
   return localStorage.getItem('StaffNumber');
 }
 
@@ -12,7 +12,7 @@ async function loadResidents(filterText = "") {
   tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px;">Loading resident records...</td></tr>';
   const StaffNumber = getLoggedInStaffNumber();
   if (!StaffNumber) {
-    window.location.href = 'Login.html';
+    window.location.href = 'index.html';
     return;
   }
   try {

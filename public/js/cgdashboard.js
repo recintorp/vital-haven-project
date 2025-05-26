@@ -95,7 +95,7 @@ if (signOutLink) {
     localStorage.removeItem('StaffNumber');
     document.getElementById('loaderOverlay').classList.add('show');
     setTimeout(() => {
-      window.location.href = 'Login.html';
+      window.location.href = 'index.html';
     }, 800);
   });
 }
@@ -134,7 +134,7 @@ if (searchIcon) {
 document.addEventListener('DOMContentLoaded', async function() {
   const StaffNumber = getLoggedInStaffNumber();
   if (!StaffNumber) {
-    window.location.href = 'Login.html';
+    window.location.href = 'index.html';
     return;
   }
   if (localStorage.getItem('vh-darkmode') === '1') {
@@ -194,6 +194,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Set notification badge to number of ResidentID that match the AssignedCaregiver
     document.getElementById('notificationBadge').textContent = residents.length;
   } catch (e) {
-    window.location.href = 'Login.html';
+    window.location.href = 'index.html';
   }
 });

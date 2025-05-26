@@ -30,7 +30,7 @@ document.getElementById('signOutLink').addEventListener('click', function (e) {
   e.preventDefault();
   document.getElementById('loaderOverlay').classList.add('show');
   setTimeout(() => {
-    window.location.href = 'Login.html';
+    window.location.href = 'index.html';
   }, 800);
 });
 

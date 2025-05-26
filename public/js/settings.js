@@ -37,7 +37,7 @@ if (signOutLink) {
     e.preventDefault();
     showLoader();
     setTimeout(() => {
-      window.location.href = 'Login.html';
+      window.location.href = 'index.html';
     }, 800);
   });
 }
